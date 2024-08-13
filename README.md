@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Alfajr Calculator
 
 ## Overview
@@ -11,5 +11,4 @@ Alfajr Calculator is a web application designed to help users calculate the cost
 - **Editable Pricing**: Admins can edit and update the price for different categories and types of printing.
 
 =======
-# Alfajr-Calculator
->>>>>>> 331bfe5f4d1d755a2e948343e107b6995d93e2f2
+
