@@ -8,61 +8,67 @@ const Calculator = () => {
     const [slides, setSlides] = useState(1);
     const [faces, setFaces] = useState(1);
 
-    const calculatePrice = () => {
-        if (copies === "" || pagesPerCopy === "" || slides === "" || faces === "") {
-            validation(copies, pagesPerCopy, slides, faces);
-            setPrice(0);
-            return;
-        }
-
+   const calculatePrice = () => {
+    if (copies === "" || pagesPerCopy === "" || slides === "" || faces === "") {
         validation(copies, pagesPerCopy, slides, faces);
+        setPrice(0);
+        return;
+    }
 
-        const allPages = parseInt(copies) * parseInt(pagesPerCopy);
-        const divisor = parseInt(slides) * parseInt(faces);
-        const printedPages = allPages / divisor;
+    validation(copies, pagesPerCopy, slides, faces);
 
-        const storedData = JSON.parse(localStorage.getItem('priceData'));
-        const priceData = storedData || {
-            color: [
-                { category: "أقل من 10 ورقات وجه", price: "0 قرش" },
-                { category: "أقل من 10 ورقات وجهين", price: "0 قرش" },
-                { category: "من 10 الى 100 ورقة وجه", price: "0 قرش" },
-                { category: "من 10 الى 100 ورقة وجهين", price: "0 قرش" },
-                { category: "أكثر من 100 ورقة", price: "0 قرش" },
-            ],
-            blackWhite: [
-                { category: "أقل من 10 ورقات وجه", price: "0 قرش" },
-                { category: "أقل من 10 ورقات وجهين", price: "0 قرش" },
-                { category: "من 10 الى 100 ورقة وجه", price: "0 قرش" },
-                { category: "من 10 الى 100 ورقة وجهين", price: "0 قرش" },
-                { category: "أكثر من 100 ورقة", price: "0 قرش" },
-            ],
-        };
+    const allPages = parseInt(copies) * parseInt(pagesPerCopy);
+    const divisor = parseInt(slides)  * parseInt(faces); 
+    const printedPages = allPages / divisor;
 
-        let pagePrice = 0;
-        const checked = document.querySelector('input[name="check"]:checked');
-        if (checked) {
-            const printType = checked.classList.contains("alwan") ? 'color' : 'blackWhite';
-            pagePrice = getPriceForCategory(printedPages, faces, priceData[printType]);
-        }
-
-        setPrice(pagePrice * printedPages);
+    const storedData = JSON.parse(localStorage.getItem('priceData'));
+    const priceData = storedData || {
+        color: [
+            { category: "أقل من 10 ورقات وجه", price: "0 قرش" },
+            { category: "أقل من 10 ورقات وجهين", price: "0 قرش" },
+            { category: "من 10 الى 100 ورقة وجه", price: "0 قرش" },
+            { category: "من 10 الى 100 ورقة وجهين", price: "0 قرش" },
+            { category: "أكثر من 100 ورقة", price: "0 قرش" },
+        ],
+        blackWhite: [
+            { category: "أقل من 10 ورقات وجه", price: "0 قرش" },
+            { category: "أقل من 10 ورقات وجهين", price: "0 قرش" },
+            { category: "من 10 الى 100 ورقة وجه", price: "0 قرش" },
+            { category: "من 10 الى 100 ورقة وجهين", price: "0 قرش" },
+            { category: "أكثر من 100 ورقة", price: "0 قرش" },
+        ],
     };
+
+    let pagePrice = 0;
+    const checked = document.querySelector('input[name="check"]:checked');
+    if (checked) {
+        const printType = checked.classList.contains("alwan") ? 'color' : 'blackWhite';
+        pagePrice = getPriceForCategory(printedPages, faces, priceData[printType]);
+    }
+
+    if (faces === 2) {
+        setPrice(pagePrice * (printedPages / 2)); 
+    } else {
+        setPrice(pagePrice * printedPages);
+    }
+    console.log (pagePrice);
+};
+
 
     const getPriceForCategory = (numPages, numFaces, priceArray) => {
         let categoryPrice = "0 قرش";
 
         if (numPages < 10) {
-            if (numFaces === 2) {
-                categoryPrice = priceArray.find(cat => cat.category.includes("أقل من 10 ورقات وجهين"))?.price || "0 قرش";
-            } else {
+            if (numFaces === 1) {
                 categoryPrice = priceArray.find(cat => cat.category.includes("أقل من 10 ورقات وجه"))?.price || "0 قرش";
+            } else {
+                categoryPrice = priceArray.find(cat => cat.category.includes("أقل من 10 ورقات وجهين"))?.price || "0 قرش";
             }
         } else if (numPages <= 100) {
-            if (numFaces === 2) {
-                categoryPrice = priceArray.find(cat => cat.category.includes("من 10 الى 100 ورقة وجهين"))?.price || "0 قرش";
-            } else {
+            if (numFaces === 1) {
                 categoryPrice = priceArray.find(cat => cat.category.includes("من 10 الى 100 ورقة وجه"))?.price || "0 قرش";
+            } else {
+                categoryPrice = priceArray.find(cat => cat.category.includes("من 10 الى 100 ورقة وجهين"))?.price || "0 قرش";
             }
         } else {
             categoryPrice = priceArray.find(cat => cat.category.includes("أكثر من 100 ورقة"))?.price || "0 قرش";
